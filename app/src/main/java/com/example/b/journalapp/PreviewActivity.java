@@ -1,23 +1,22 @@
 package com.example.b.journalapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.example.b.journalapp.Models.Notes;
-
-import java.util.ArrayList;
-import java.util.Date;
+import com.example.b.journalapp.Utilites.DatabaseHelper;
 
 public class PreviewActivity extends AppCompatActivity
         implements RecyclerViewAdapter.ItemListener{
@@ -25,45 +24,101 @@ public class PreviewActivity extends AppCompatActivity
     private RecyclerView mNotesList;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Notes[] DUMMY_DATASET = new Notes[3];
+    private Notes[] mDataSet = new Notes[0];
+    private Boolean mExit = false;
+    private Boolean mData = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
 
-        mNotesList = (RecyclerView) findViewById(R.id.preview_notes);
+        mNotesList = findViewById(R.id.preview_notes);
         mNotesList.setHasFixedSize(true);
 
-        DUMMY_DATASET[0] = new Notes();
-        DUMMY_DATASET[0].text = "France vs Uruguay";
-        DUMMY_DATASET[0].timestamp = System.currentTimeMillis();
-        DUMMY_DATASET[0].category = "Sports";
-
-        DUMMY_DATASET[1] = new Notes();
-        DUMMY_DATASET[1].text = "Amazing Pasta Dish";
-        DUMMY_DATASET[1].timestamp = System.currentTimeMillis();
-        DUMMY_DATASET[1].category = "Cooking";
-
-        DUMMY_DATASET[2] = new Notes();
-        DUMMY_DATASET[2].text = "Jog! Jog! Jog!";
-        DUMMY_DATASET[2].timestamp = System.currentTimeMillis();
-        DUMMY_DATASET[2].category = "Health";
-
-        mLayoutManager = new LinearLayoutManager(this);
-        mNotesList.setLayoutManager(mLayoutManager);
-        mAdapter = new RecyclerViewAdapter(this, DUMMY_DATASET, this);
-        mNotesList.setAdapter(mAdapter);
+        new PreviewExpenses().execute();
+        setData();
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        //TODO (1): Add note
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(PreviewActivity.this,EditorActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new PreviewExpenses().execute();
+        setData();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new PreviewExpenses().execute();
+        setData();
+    }
+
+    public void setData()
+    {
+        Log.d("mData State: ", String.valueOf(mData));
+        if(mData) {
+            mLayoutManager = new LinearLayoutManager(this);
+            mNotesList.setLayoutManager(mLayoutManager);
+            mAdapter = new RecyclerViewAdapter(this, mDataSet, this);
+            mNotesList.setAdapter(mAdapter);
+        }
+    }
+
+    /***********
+     * TASK TO RETRIEVE ALL NOTES AND PLACE IN PREVIEW
+     */
+
+    public class PreviewExpenses extends AsyncTask<Void, Void, Notes[]> {
+        @Override
+        protected Notes[] doInBackground(Void... voids) {
+            Notes[] allnotes = new Notes[0];
+
+            try{
+                DatabaseHelper db = new DatabaseHelper(PreviewActivity.this);
+                allnotes = db.querynote(db);
+                db.close();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return allnotes;
+        }
+
+        @Override
+        protected void onPostExecute(Notes[] notes) {
+            super.onPostExecute(notes);
+
+            if(notes != null && notes.length > 0) {
+                mData = true;
+
+                mDataSet = new Notes[notes.length];
+                for(int i = 0; i < notes.length; i++) {
+                    mDataSet[i] = new Notes();
+                    mDataSet[i].title = notes[i].title;
+                    mDataSet[i].text = notes[i].text;
+                    mDataSet[i].timestamp = notes[i].timestamp;
+                    Log.d("RESULT","Base Dataset");
+
+                }
+
+            }else {
+                Toast.makeText(PreviewActivity.this,"List not updated",Toast.LENGTH_SHORT).show();
+
+                mData = false;
+            }
+        }
     }
 
     @Override
@@ -79,13 +134,13 @@ public class PreviewActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
-            case R.id.item_about:
+            case R.id.item_about: //TODO Popup Dialog with information about the app
                 Toast.makeText(this,"ABOUT",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.item_settings:
+            case R.id.item_settings: //TODO: Options to change settings
                 Toast.makeText(this,"SETTINGS",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.app_bar_search:
+            case R.id.app_bar_search: //TODO: Fix search functionality and shortlist messages accordingly
                 Toast.makeText(this,"SEARCH",Toast.LENGTH_SHORT).show();
                 break;
             default: break;
@@ -100,10 +155,32 @@ public class PreviewActivity extends AppCompatActivity
         Toast.makeText(this,"NOTE",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(PreviewActivity.this, EditorActivity.class);
         intent.putExtra("id",item.id);
+        intent.putExtra("title",item.title);
         intent.putExtra("text",item.text);
-        intent.putExtra("category",item.category);
         intent.putExtra("time",item.timestamp);
         startActivity(intent);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+
+        if(mExit) {
+            finish();
+        }
+        else
+        {
+            Toast.makeText(this, R.string.backagain,Toast.LENGTH_SHORT).show();
+            mExit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mExit = false;
+                }
+            }, 3 * 1000);
+        }
+    }
+
 }

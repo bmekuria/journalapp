@@ -23,8 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PreviewActivity" />
-        <activity android:name=".EditorActivity"></activity>
+        <activity
+            android:name=".PreviewActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".EditorActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".PreviewActivity"/>
     </application>
 
 </manifest>

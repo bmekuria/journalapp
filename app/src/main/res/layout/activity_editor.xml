@@ -9,21 +9,20 @@
 
     <EditText
         android:id="@+id/editor_editText"
-        android:layout_width="352dp"
-        android:layout_height="450dp"
-        android:layout_gravity="start"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="338dp"
+        android:layout_height="391dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="72dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        android:textAlignment="textStart"
+        android:gravity="top|start"
+        android:inputType="textPersonName|textMultiLine"
+        android:scrollHorizontally="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/deleteoption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -34,36 +33,39 @@
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/ic_menu_save"
         android:layout_width="28dp"
         android:layout_height="27dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="320dp"
-        android:layout_marginStart="320dp"
+        android:layout_marginLeft="312dp"
+        android:layout_marginStart="312dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/sym_contact_card" />
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginStart="136dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:srcCompat="@android:drawable/ic_menu_save" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/ic_menu_dialog"
         android:layout_width="33dp"
         android:layout_height="26dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="232dp"
-        android:layout_marginStart="232dp"
+        android:layout_marginLeft="176dp"
+        android:layout_marginStart="176dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/ic_dialog_info" />
+
+    <EditText
+        android:id="@+id/title_editText"
+        android:layout_width="339dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/hint_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -6,5 +6,4 @@ public class Notes {
     public String title;
     public String text;
     public long timestamp;
-    public String category;
 }

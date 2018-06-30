@@ -1,8 +1,6 @@
 package com.example.b.journalapp;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.b.journalapp.Models.Notes;
+import com.example.b.journalapp.Utilites.DateFormatting;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -43,10 +42,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         public void setData (Notes item) {
+
             this.mItem = item;
-            mTitle.setText(mItem.text);
+
+            mTitle.setText(mItem.title);
             mPreview.setText(mItem.text);
-            mDate.setText(String.valueOf(mItem.timestamp));
+            mDate.setText(String.valueOf(new DateFormatting().LongtoDate(mItem.timestamp)));
+
         }
 
         @Override
