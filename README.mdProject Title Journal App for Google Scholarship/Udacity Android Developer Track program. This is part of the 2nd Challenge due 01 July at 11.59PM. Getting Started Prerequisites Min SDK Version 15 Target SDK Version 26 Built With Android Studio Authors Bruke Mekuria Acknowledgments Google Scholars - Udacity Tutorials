@@ -17,3 +17,7 @@ Bruke Mekuria
 
 Acknowledgments
 Google Scholars - Udacity Tutorials
+
+Issues:
+Registering and Login with Google Registration isn't working as an error resulted in the configuring a Google API Console project. Hence without a Google API console, GoogleSignInOptions won't work.
+
