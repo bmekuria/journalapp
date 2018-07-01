@@ -37,8 +37,6 @@ public class PreviewActivity extends AppCompatActivity
         mNotesList.setHasFixedSize(true);
 
         new PreviewExpenses().execute();
-        setData();
-
 
         //TODO (1): Add note
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
@@ -54,25 +52,18 @@ public class PreviewActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         new PreviewExpenses().execute();
-        setData();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        new PreviewExpenses().execute();
-        setData();
     }
 
     public void setData()
     {
-        Log.d("mData State: ", String.valueOf(mData));
-        if(mData) {
+        //Log.d("mData State: ", String.valueOf(mData));
+
+            mNotesList.setAdapter(null);
             mLayoutManager = new LinearLayoutManager(this);
             mNotesList.setLayoutManager(mLayoutManager);
             mAdapter = new RecyclerViewAdapter(this, mDataSet, this);
             mNotesList.setAdapter(mAdapter);
-        }
+
     }
 
     /***********
@@ -100,24 +91,23 @@ public class PreviewActivity extends AppCompatActivity
         protected void onPostExecute(Notes[] notes) {
             super.onPostExecute(notes);
 
-            if(notes != null && notes.length > 0) {
-                mData = true;
+            if(notes.length > 0) {
+                //mData = true;
 
                 mDataSet = new Notes[notes.length];
                 for(int i = 0; i < notes.length; i++) {
                     mDataSet[i] = new Notes();
+                    mDataSet[i].id   = notes[i].id;
                     mDataSet[i].title = notes[i].title;
                     mDataSet[i].text = notes[i].text;
                     mDataSet[i].timestamp = notes[i].timestamp;
-                    Log.d("RESULT","Base Dataset");
 
                 }
-
             }else {
                 Toast.makeText(PreviewActivity.this,"List not updated",Toast.LENGTH_SHORT).show();
-
-                mData = false;
+                //mData = false;
             }
+            setData();
         }
     }
 
@@ -152,12 +142,13 @@ public class PreviewActivity extends AppCompatActivity
     @Override
     public void onItemClick(Notes item) {
 
-        Toast.makeText(this,"NOTE",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"NOTE",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(PreviewActivity.this, EditorActivity.class);
         intent.putExtra("id",item.id);
         intent.putExtra("title",item.title);
         intent.putExtra("text",item.text);
         intent.putExtra("time",item.timestamp);
+        Log.d("mNote ID sent", String.valueOf(item.id));
         startActivity(intent);
 
     }

@@ -39,20 +39,10 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="312dp"
         android:layout_marginStart="312dp"
+        android:onClick="clickSave"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@android:drawable/ic_menu_save" />
-
-    <ImageView
-        android:id="@+id/ic_menu_dialog"
-        android:layout_width="33dp"
-        android:layout_height="26dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="176dp"
-        android:layout_marginStart="176dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_dialog_info" />
 
     <EditText
         android:id="@+id/title_editText"
@@ -63,6 +53,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
+        android:textStyle="bold"
         android:hint="@string/hint_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

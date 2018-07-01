@@ -99,9 +99,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             try{
                 for(int i = 0; i < mCursor.getCount(); i++, mCursor.moveToNext()) {
                     allnotes[i] = new Notes();
+                    allnotes[i].id = mCursor.getInt(mCursor.getColumnIndex("_id"));
                     allnotes[i].title = mCursor.getString(mCursor.getColumnIndex("title"));
                     allnotes[i].text = mCursor.getString(mCursor.getColumnIndex("notes"));
                     allnotes[i].timestamp = mCursor.getLong(mCursor.getColumnIndex("timestamp"));
+                    Log.d("NOTES ID: "+i, String.valueOf(allnotes[i].id));
 
                 }
                 mCursor.close();
@@ -140,6 +142,24 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
 
+    /*
+    QUERY TO UPDATE NOTE
+     */
+
+    public boolean updateNote(DatabaseHelper db, Notes modifyNote) {
+
+        SQLiteDatabase sq = db.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("title",modifyNote.title);
+        cv.put("notes",modifyNote.text);
+        cv.put("timestamp",System.currentTimeMillis());
+
+        int response = sq.update(TABLE_NAME,cv,"_id=?",
+                new String[]{Integer.toString(modifyNote.id)});
+
+        return true;
+    }
     /*
     TODO:
     1. Create database

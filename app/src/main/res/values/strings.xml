@@ -18,4 +18,5 @@
     <string name="title_activity_test">testActivity</string>
     <string name="hint_title">Title</string>
     <string name="backagain">Press back again to exit.</string>
+    <string name="no_title">No Title</string>
 </resources>
